@@ -1,0 +1,6 @@
+Top.RTConnector7
+    Top.testCont#directions2.far[0] <-> Top.calculation#directions.far[0]
+Top.RTConnector8
+    Top.detection#directions.far[0] <-> Top.testCont#directions.far[0]
+Top.RTConnector9
+    Top.test#test2.far[0] <-> Top.calculation#test.far[0]
