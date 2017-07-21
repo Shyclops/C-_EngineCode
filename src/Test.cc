@@ -10,8 +10,6 @@ struct params_isReadyIn
 {
     int X;
     int Y;
-    int Height;
-    int Width;
 };
 
 static UMLRTObject_field fields_isReadyIn[] = 
@@ -29,36 +27,35 @@ static UMLRTObject_field fields_isReadyIn[] =
         offsetof( params_isReadyIn, Y ),
         1,
         0
-    },
-    {
-        "Height",
-        &UMLRTType_int,
-        offsetof( params_isReadyIn, Height ),
-        1,
-        0
-    },
-    {
-        "Width",
-        &UMLRTType_int,
-        offsetof( params_isReadyIn, Width ),
-        1,
-        0
     }
 };
 
 static UMLRTObject payload_isReadyIn = 
 {
     sizeof( params_isReadyIn ),
-    4,
+    2,
     fields_isReadyIn
+};
+
+struct params_isStartIn
+{
+    int X;
+    int Y;
 };
 
 static UMLRTObject_field fields_isStartIn[] = 
 {
     {
-        "R",
-        &UMLRTType_uchar,
-        0,
+        "X",
+        &UMLRTType_int,
+        offsetof( params_isStartIn, X ),
+        1,
+        0
+    },
+    {
+        "Y",
+        &UMLRTType_int,
+        offsetof( params_isStartIn, Y ),
         1,
         0
     }
@@ -66,8 +63,8 @@ static UMLRTObject_field fields_isStartIn[] =
 
 static UMLRTObject payload_isStartIn = 
 {
-    sizeof( unsigned char ),
-    1,
+    sizeof( params_isStartIn ),
+    2,
     fields_isStartIn
 };
 
@@ -75,8 +72,6 @@ struct params_isReadyOut
 {
     int X;
     int Y;
-    int Height;
-    int Width;
 };
 
 static UMLRTObject_field fields_isReadyOut[] = 
@@ -94,36 +89,35 @@ static UMLRTObject_field fields_isReadyOut[] =
         offsetof( params_isReadyOut, Y ),
         1,
         0
-    },
-    {
-        "Height",
-        &UMLRTType_int,
-        offsetof( params_isReadyOut, Height ),
-        1,
-        0
-    },
-    {
-        "Width",
-        &UMLRTType_int,
-        offsetof( params_isReadyOut, Width ),
-        1,
-        0
     }
 };
 
 static UMLRTObject payload_isReadyOut = 
 {
     sizeof( params_isReadyOut ),
-    4,
+    2,
     fields_isReadyOut
+};
+
+struct params_isStartOut
+{
+    int X;
+    int Y;
 };
 
 static UMLRTObject_field fields_isStartOut[] = 
 {
     {
-        "Flag",
-        &UMLRTType_bool,
-        0,
+        "X",
+        &UMLRTType_int,
+        offsetof( params_isStartOut, X ),
+        1,
+        0
+    },
+    {
+        "Y",
+        &UMLRTType_int,
+        offsetof( params_isStartOut, Y ),
         1,
         0
     }
@@ -131,8 +125,8 @@ static UMLRTObject_field fields_isStartOut[] =
 
 static UMLRTObject payload_isStartOut = 
 {
-    sizeof( bool ),
-    1,
+    sizeof( params_isStartOut ),
+    2,
     fields_isStartOut
 };
 
@@ -141,17 +135,17 @@ Test::Conj::Conj( const UMLRTCommsPort * & srcPort )
 {
 }
 
-UMLRTOutSignal Test::Conj::isReadyIn( int X, int Y, int Height, int Width ) const
+UMLRTOutSignal Test::Conj::isReadyIn( int X, int Y ) const
 {
     UMLRTOutSignal signal;
-    signal.initialize( "isReadyIn", signal_isReadyIn, srcPort, &payload_isReadyIn, &X, &Y, &Height, &Width );
+    signal.initialize( "isReadyIn", signal_isReadyIn, srcPort, &payload_isReadyIn, &X, &Y );
     return signal;
 }
 
-UMLRTOutSignal Test::Conj::isStartIn( unsigned char R ) const
+UMLRTOutSignal Test::Conj::isStartIn( int X, int Y ) const
 {
     UMLRTOutSignal signal;
-    signal.initialize( "isStartIn", signal_isStartIn, srcPort, &payload_isStartIn, &R );
+    signal.initialize( "isStartIn", signal_isStartIn, srcPort, &payload_isStartIn, &X, &Y );
     return signal;
 }
 
@@ -160,17 +154,17 @@ Test::Base::Base( const UMLRTCommsPort * & srcPort )
 {
 }
 
-UMLRTOutSignal Test::Base::isReadyOut( int X, int Y, int Height, int Width ) const
+UMLRTOutSignal Test::Base::isReadyOut( int X, int Y ) const
 {
     UMLRTOutSignal signal;
-    signal.initialize( "isReadyOut", signal_isReadyOut, srcPort, &payload_isReadyOut, &X, &Y, &Height, &Width );
+    signal.initialize( "isReadyOut", signal_isReadyOut, srcPort, &payload_isReadyOut, &X, &Y );
     return signal;
 }
 
-UMLRTOutSignal Test::Base::isStartOut( bool Flag ) const
+UMLRTOutSignal Test::Base::isStartOut( int X, int Y ) const
 {
     UMLRTOutSignal signal;
-    signal.initialize( "isStartOut", signal_isStartOut, srcPort, &payload_isStartOut, &Flag );
+    signal.initialize( "isStartOut", signal_isStartOut, srcPort, &payload_isStartOut, &X, &Y );
     return signal;
 }
 

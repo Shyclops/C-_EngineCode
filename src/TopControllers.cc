@@ -3,6 +3,7 @@
 
 #include "Calculation.hh"
 #include "Detection.hh"
+#include "Observer.hh"
 #include "PreExecute.hh"
 #include "TestCont.hh"
 #include "Top.hh"
@@ -25,6 +26,7 @@ static UMLRTSlot * slots_Top[] =
 {
     &Top_slots[InstId_Top_calculation],
     &Top_slots[InstId_Top_detection],
+    &Top_slots[InstId_Top_observer],
     &Top_slots[InstId_Top_test],
     &Top_slots[InstId_Top_testCont]
 };
@@ -45,15 +47,21 @@ static UMLRTCapsulePart parts_Top[] =
     },
     {
         &Top,
-        Capsule_Top::part_test,
+        Capsule_Top::part_observer,
         1,
         &slots_Top[2]
     },
     {
         &Top,
-        Capsule_Top::part_testCont,
+        Capsule_Top::part_test,
         1,
         &slots_Top[3]
+    },
+    {
+        &Top,
+        Capsule_Top::part_testCont,
+        1,
+        &slots_Top[4]
     }
 };
 
@@ -130,6 +138,10 @@ static UMLRTCommsPortFarEnd internalfarEndList_Top_calculation[] =
     {
         0,
         NULL
+    },
+    {
+        0,
+        NULL
     }
 };
 
@@ -141,6 +153,27 @@ UMLRTCommsPort internalports_Top_calculation[] =
         &Top_slots[InstId_Top_calculation],
         1,
         internalfarEndList_Top_calculation,
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    },
+    {
+        &Calculation,
+        Capsule_Calculation::internalport_observation,
+        &Top_slots[InstId_Top_calculation],
+        1,
+        &internalfarEndList_Top_calculation[2],
         NULL,
         NULL,
         "",
@@ -182,7 +215,8 @@ UMLRTCommsPort internalports_Top_calculation[] =
 static const UMLRTCommsPort * internalports_Top_calculation_ptrs[] = 
 {
     &internalports_Top_calculation[0],
-    &internalports_Top_calculation[1]
+    &internalports_Top_calculation[1],
+    &internalports_Top_calculation[2]
 };
 
 static Capsule_Calculation top_calculation( &Calculation, &Top_slots[InstId_Top_calculation], borderports_Top_calculation_ptrs, internalports_Top_calculation_ptrs, true );
@@ -238,6 +272,10 @@ static UMLRTCommsPortFarEnd internalfarEndList_Top_detection[] =
     {
         0,
         NULL
+    },
+    {
+        0,
+        NULL
     }
 };
 
@@ -245,7 +283,7 @@ UMLRTCommsPort internalports_Top_detection[] =
 {
     {
         &Detection,
-        Capsule_Detection::internalport_test,
+        Capsule_Detection::internalport_observation,
         &Top_slots[InstId_Top_detection],
         1,
         &internalfarEndList_Top_detection[1],
@@ -266,10 +304,31 @@ UMLRTCommsPort internalports_Top_detection[] =
     },
     {
         &Detection,
-        Capsule_Detection::internalport_timing,
+        Capsule_Detection::internalport_test,
         &Top_slots[InstId_Top_detection],
         1,
         &internalfarEndList_Top_detection[2],
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    },
+    {
+        &Detection,
+        Capsule_Detection::internalport_timing,
+        &Top_slots[InstId_Top_detection],
+        1,
+        &internalfarEndList_Top_detection[3],
         NULL,
         NULL,
         "",
@@ -312,10 +371,179 @@ static const UMLRTCommsPort * internalports_Top_detection_ptrs[] =
 {
     &internalports_Top_detection[0],
     &internalports_Top_detection[1],
-    &internalports_Top_detection[2]
+    &internalports_Top_detection[2],
+    &internalports_Top_detection[3]
 };
 
 static Capsule_Detection top_detection( &Detection, &Top_slots[InstId_Top_detection], borderports_Top_detection_ptrs, internalports_Top_detection_ptrs, true );
+
+static UMLRTCommsPortFarEnd internalfarEndList_Top_observer[] = 
+{
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    },
+    {
+        0,
+        NULL
+    }
+};
+
+UMLRTCommsPort internalports_Top_observer[] = 
+{
+    {
+        &Observer,
+        Capsule_Observer::internalport_observation,
+        &Top_slots[InstId_Top_observer],
+        20,
+        &internalfarEndList_Top_observer[1],
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false
+    },
+    {
+        &Observer,
+        Capsule_Observer::internalport_timer,
+        &Top_slots[InstId_Top_observer],
+        1,
+        &internalfarEndList_Top_observer[21],
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    },
+    {
+        &Observer,
+        Capsule_Observer::internalport_log,
+        &Top_slots[InstId_Top_observer],
+        1,
+        internalfarEndList_Top_observer,
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    }
+};
+
+static const UMLRTCommsPort * internalports_Top_observer_ptrs[] = 
+{
+    &internalports_Top_observer[0],
+    &internalports_Top_observer[1],
+    &internalports_Top_observer[2]
+};
+
+static Capsule_Observer top_observer( &Observer, &Top_slots[InstId_Top_observer], NULL, internalports_Top_observer_ptrs, true );
 
 static UMLRTCommsPortFarEnd borderfarEndList_Top_test[] = 
 {
@@ -372,6 +600,10 @@ static UMLRTCommsPortFarEnd internalfarEndList_Top_test[] =
     {
         0,
         NULL
+    },
+    {
+        0,
+        NULL
     }
 };
 
@@ -400,10 +632,31 @@ UMLRTCommsPort internalports_Top_test[] =
     },
     {
         &PreExecute,
+        Capsule_PreExecute::internalport_observation,
+        &Top_slots[InstId_Top_test],
+        1,
+        &internalfarEndList_Top_test[2],
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    },
+    {
+        &PreExecute,
         Capsule_PreExecute::internalport_test,
         &Top_slots[InstId_Top_test],
         2,
-        &internalfarEndList_Top_test[2],
+        &internalfarEndList_Top_test[3],
         NULL,
         NULL,
         "",
@@ -446,7 +699,8 @@ static const UMLRTCommsPort * internalports_Top_test_ptrs[] =
 {
     &internalports_Top_test[0],
     &internalports_Top_test[1],
-    &internalports_Top_test[2]
+    &internalports_Top_test[2],
+    &internalports_Top_test[3]
 };
 
 static Capsule_PreExecute top_test( &PreExecute, &Top_slots[InstId_Top_test], borderports_Top_test_ptrs, internalports_Top_test_ptrs, true );
@@ -532,6 +786,10 @@ static UMLRTCommsPortFarEnd internalfarEndList_Top_testCont[] =
     {
         0,
         NULL
+    },
+    {
+        0,
+        NULL
     }
 };
 
@@ -560,10 +818,31 @@ UMLRTCommsPort internalports_Top_testCont[] =
     },
     {
         &TestCont,
-        Capsule_TestCont::internalport_test,
+        Capsule_TestCont::internalport_observation,
         &Top_slots[InstId_Top_testCont],
         1,
         &internalfarEndList_Top_testCont[3],
+        NULL,
+        NULL,
+        "",
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+    },
+    {
+        &TestCont,
+        Capsule_TestCont::internalport_test,
+        &Top_slots[InstId_Top_testCont],
+        1,
+        &internalfarEndList_Top_testCont[4],
         NULL,
         NULL,
         "",
@@ -606,7 +885,8 @@ static const UMLRTCommsPort * internalports_Top_testCont_ptrs[] =
 {
     &internalports_Top_testCont[0],
     &internalports_Top_testCont[1],
-    &internalports_Top_testCont[2]
+    &internalports_Top_testCont[2],
+    &internalports_Top_testCont[3]
 };
 
 static Capsule_TestCont top_testCont( &TestCont, &Top_slots[InstId_Top_testCont], borderports_Top_testCont_ptrs, internalports_Top_testCont_ptrs, true );
@@ -621,7 +901,7 @@ UMLRTSlot Top_slots[] =
         0,
         &top,
         &DefaultController_,
-        4,
+        5,
         parts_Top,
         0,
         NULL,
@@ -657,6 +937,22 @@ UMLRTSlot Top_slots[] =
         NULL,
         1,
         borderports_Top_detection,
+        NULL,
+        true,
+        false
+    },
+    {
+        "Top.observer",
+        0,
+        &Observer,
+        &Top,
+        Capsule_Top::part_observer,
+        &top_observer,
+        &DefaultController_,
+        0,
+        NULL,
+        0,
+        NULL,
         NULL,
         true,
         false

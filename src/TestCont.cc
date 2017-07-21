@@ -12,34 +12,25 @@
 class UMLRTRtsInterface;
 struct UMLRTCommsPort;
 
-#include <X11/Xlib.h>
-#include "external_resources/opencv/sources/modules/core/include/opencv2/core.hpp"
-#include "external_resources/opencv/sources/modules/highgui/include/opencv2/highgui.hpp"
-#include "external_resources/opencv/sources/modules/imgcodecs/include/opencv2/imgcodecs.hpp"
-#include "external_resources/opencv/sources/modules/imgproc/include/opencv2/imgproc.hpp"
-using namespace cv;
-
 Capsule_TestCont::Capsule_TestCont( const UMLRTCapsuleClass * cd, UMLRTSlot * st, const UMLRTCommsPort * * border, const UMLRTCommsPort * * internal, bool isStat )
 : UMLRTCapsule( NULL, cd, st, border, internal, isStat )
 , directions( borderPorts[borderport_directions] )
 , directions2( borderPorts[borderport_directions2] )
 , directions3( internalPorts[internalport_directions3] )
+, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , x( 0 )
 , y( 0 )
-, height( 0 )
-, width( 0 )
-, pathG( 0 )
-, flag( false )
 , currentState( SPECIAL_INTERNAL_STATE_UNVISITED )
 {
     stateNames[Finished] = "Finished";
     stateNames[Playing] = "Playing";
     stateNames[Waiting] = "Waiting";
-    stateNames[moveTest] = "moveTest";
+    stateNames[checkingDirection] = "checkingDirection";
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
+
 
 
 
@@ -82,12 +73,6 @@ void Capsule_TestCont::unbindPort( bool isBorder, int portId, int index )
 
 
 
-
-
-
-
-
-
 void Capsule_TestCont::inject( const UMLRTMessage & message )
 {
     msg = &message;
@@ -102,8 +87,8 @@ void Capsule_TestCont::inject( const UMLRTMessage & message )
     case Finished:
         currentState = state_____Finished( &message );
         break;
-    case moveTest:
-        currentState = state_____moveTest( &message );
+    case checkingDirection:
+        currentState = state_____checkingDirection( &message );
         break;
     default:
         break;
@@ -143,15 +128,11 @@ void Capsule_TestCont::entryaction_____Playing( const UMLRTMessage * msg )
 {
     #define X ( *(int *)msg->getParam( 0 ) )
     #define Y ( *(int *)msg->getParam( 1 ) )
-    #define Height ( *(int *)msg->getParam( 2 ) )
-    #define Width ( *(int *)msg->getParam( 3 ) )
     #define rtdata ( (int *)msg->getParam( 0 ) )
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont::Playing entry  */
     log.log("X: %d, Y: %d", x, y);
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
-    #undef Width
-    #undef Height
     #undef Y
     #undef X
 }
@@ -168,43 +149,22 @@ void Capsule_TestCont::transitionaction_____Initial( const UMLRTMessage * msg )
 {
     #define rtdata ( (void *)msg->getParam( 0 ) )
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition subvertex0,Waiting */
-    map = imread("external_resources/map.png");
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
 }
 
 void Capsule_TestCont::transitionaction_____transition1( const UMLRTMessage * msg )
 {
-    #define X ( *(int *)msg->getParam( 0 ) )
-    #define Y ( *(int *)msg->getParam( 1 ) )
-    #define Height ( *(int *)msg->getParam( 2 ) )
-    #define Width ( *(int *)msg->getParam( 3 ) )
-    #define rtdata ( (int *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Waiting,Playing,isReadyIn:test */
-    x = X;
-    y = Y;
-    height = Height;
-    width = Width;
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-    #undef Width
-    #undef Height
-    #undef Y
-    #undef X
-}
-
-void Capsule_TestCont::transitionaction_____transition2( const UMLRTMessage * msg )
-{
     #define Direction ( *(int *)msg->getParam( 0 ) )
     #define rtdata ( (int *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Playing,moveTest,directions:directions */
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Playing,checkingDirection,directions:directions */
     directions2.directionsCalc(x,y,Direction).send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
     #undef Direction
 }
 
-void Capsule_TestCont::transitionaction_____transition3( const UMLRTMessage * msg )
+void Capsule_TestCont::transitionaction_____transition2( const UMLRTMessage * msg )
 {
     #define rtdata ( (void *)msg->getParam( 0 ) )
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Playing,Finished,exits:directions */
@@ -213,23 +173,33 @@ void Capsule_TestCont::transitionaction_____transition3( const UMLRTMessage * ms
     #undef rtdata
 }
 
+void Capsule_TestCont::transitionaction_____transition3( const UMLRTMessage * msg )
+{
+    #define X ( *(int *)msg->getParam( 0 ) )
+    #define Y ( *(int *)msg->getParam( 1 ) )
+    #define rtdata ( (int *)msg->getParam( 0 ) )
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Waiting,Playing,isReadyIn:test */
+    x = X;
+    y = Y;
+    Event e1;
+    e1.setSourceName(this->getName());
+    e1.setParam("x", x);
+    e1.setParam("y", y);
+    observation.event(e1).send();
+    /* UMLRTGEN-USERREGION-END */
+    #undef rtdata
+    #undef Y
+    #undef X
+}
+
 void Capsule_TestCont::transitionaction_____transition4( const UMLRTMessage * msg )
 {
     #define X ( *(int *)msg->getParam( 0 ) )
     #define Y ( *(int *)msg->getParam( 1 ) )
     #define rtdata ( (int *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition moveTest,Playing,directionCalc:directions2 */
-    Vec3b intensity = map.at<Vec3b>(Y, X);
-    g = intensity.val[1];
-    if (g==pathG){
-    flag = true;
-    log.log("Moved");
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition checkingDirection,Playing,directionCalc:directions2 */
     x = X;
     y = Y;
-    } else{
-    log.log("Wall");
-    flag = false;
-    }
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
     #undef Y
@@ -247,23 +217,23 @@ void Capsule_TestCont::actionchain_____transition1( const UMLRTMessage * msg )
 {
     update_state( SPECIAL_INTERNAL_STATE_TOP );
     transitionaction_____transition1( msg );
-    update_state( Playing );
-    entryaction_____Playing( msg );
+    update_state( checkingDirection );
 }
 
 void Capsule_TestCont::actionchain_____transition2( const UMLRTMessage * msg )
 {
     update_state( SPECIAL_INTERNAL_STATE_TOP );
     transitionaction_____transition2( msg );
-    update_state( moveTest );
+    update_state( Finished );
+    entryaction_____Finished( msg );
 }
 
 void Capsule_TestCont::actionchain_____transition3( const UMLRTMessage * msg )
 {
     update_state( SPECIAL_INTERNAL_STATE_TOP );
     transitionaction_____transition3( msg );
-    update_state( Finished );
-    entryaction_____Finished( msg );
+    update_state( Playing );
+    entryaction_____Playing( msg );
 }
 
 void Capsule_TestCont::actionchain_____transition4( const UMLRTMessage * msg )
@@ -293,10 +263,10 @@ Capsule_TestCont::State Capsule_TestCont::state_____Playing( const UMLRTMessage 
         switch( msg->getSignalId() )
         {
         case Directions::signal_directions:
-            actionchain_____transition2( msg );
-            return moveTest;
+            actionchain_____transition1( msg );
+            return checkingDirection;
         case Directions::signal_exits:
-            actionchain_____transition3( msg );
+            actionchain_____transition2( msg );
             return Finished;
         default:
             this->unexpectedMessage();
@@ -318,7 +288,7 @@ Capsule_TestCont::State Capsule_TestCont::state_____Waiting( const UMLRTMessage 
         switch( msg->getSignalId() )
         {
         case Test::signal_isReadyIn:
-            actionchain_____transition1( msg );
+            actionchain_____transition3( msg );
             return Playing;
         default:
             this->unexpectedMessage();
@@ -332,7 +302,7 @@ Capsule_TestCont::State Capsule_TestCont::state_____Waiting( const UMLRTMessage 
     return currentState;
 }
 
-Capsule_TestCont::State Capsule_TestCont::state_____moveTest( const UMLRTMessage * msg )
+Capsule_TestCont::State Capsule_TestCont::state_____checkingDirection( const UMLRTMessage * msg )
 {
     switch( msg->destPort->role()->id )
     {
@@ -404,6 +374,20 @@ static const UMLRTCommsPortRole portroles_internal[] =
         false
     },
     {
+        Capsule_TestCont::port_observation,
+        "Observation",
+        "observation",
+        "",
+        1,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false
+    },
+    {
         Capsule_TestCont::port_test,
         "Test",
         "test",
@@ -448,7 +432,7 @@ const UMLRTCapsuleClass TestCont =
     NULL,
     2,
     portroles_border,
-    3,
+    4,
     portroles_internal
 };
 

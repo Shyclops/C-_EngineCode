@@ -13,8 +13,8 @@ namespace Test
     {
     public:
         Conj( const UMLRTCommsPort * & srcPort );
-        UMLRTOutSignal isReadyIn( int X, int Y, int Height, int Width ) const;
-        UMLRTOutSignal isStartIn( unsigned char R ) const;
+        UMLRTOutSignal isReadyIn( int X, int Y ) const;
+        UMLRTOutSignal isStartIn( int X, int Y ) const;
     };
     enum SignalId
     {
@@ -27,8 +27,8 @@ namespace Test
     {
     public:
         Base( const UMLRTCommsPort * & srcPort );
-        UMLRTOutSignal isReadyOut( int X, int Y, int Height, int Width ) const;
-        UMLRTOutSignal isStartOut( bool Flag ) const;
+        UMLRTOutSignal isReadyOut( int X, int Y ) const;
+        UMLRTOutSignal isStartOut( int X, int Y ) const;
     };
 };
 

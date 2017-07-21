@@ -22,7 +22,7 @@ int main( int argc, char * argv[] )
 {
     UMLRTController::initializePools( &signalElementPool, &messagePool, &timerPool );
     UMLRTMain::setArgs( argc, argv );
-    UMLRTCapsuleToControllerMap::setDefaultSlotList( Top_slots, 5 );
+    UMLRTCapsuleToControllerMap::setDefaultSlotList( Top_slots, 6 );
 
     if( ! UMLRTMain::targetStartup() )
         return EXIT_FAILURE;

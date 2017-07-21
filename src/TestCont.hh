@@ -3,6 +3,7 @@
 #define TESTCONT_HH
 
 #include "Directions.hh"
+#include "Observation.hh"
 #include "Test.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
@@ -10,13 +11,6 @@
 #include "umlrtmessage.hh"
 struct UMLRTCommsPort;
 struct UMLRTSlot;
-
-#include <X11/Xlib.h>
-#include "external_resources/opencv/sources/modules/core/include/opencv2/core.hpp"
-#include "external_resources/opencv/sources/modules/highgui/include/opencv2/highgui.hpp"
-#include "external_resources/opencv/sources/modules/imgcodecs/include/opencv2/imgcodecs.hpp"
-#include "external_resources/opencv/sources/modules/imgproc/include/opencv2/imgproc.hpp"
-using namespace cv;
 
 class Capsule_TestCont : public UMLRTCapsule
 {
@@ -37,11 +31,13 @@ public:
     enum InternalPortId
     {
         internalport_directions3,
+        internalport_observation,
         internalport_test,
         internalport_log
     };
 protected:
     UMLRTLogProtocol_baserole log;
+    Observation::Base observation;
     Test::Base test;
 public:
     enum PartId
@@ -53,6 +49,7 @@ public:
         port_directions2,
         port_directions3,
         port_log,
+        port_observation,
         port_test
     };
     virtual void bindPort( bool isBorder, int portId, int index );
@@ -60,13 +57,7 @@ public:
 private:
     int x;
     int y;
-    int height;
-    int width;
-    int pathG;
-    bool flag;
-    Mat map;
 public:
-    unsigned char g;
     virtual void inject( const UMLRTMessage & message );
     virtual void initialize( const UMLRTMessage & message );
     const char * getCurrentStateString() const;
@@ -76,7 +67,7 @@ private:
         Finished,
         Playing,
         Waiting,
-        moveTest,
+        checkingDirection,
         SPECIAL_INTERNAL_STATE_TOP,
         SPECIAL_INTERNAL_STATE_UNVISITED
     };
@@ -99,7 +90,7 @@ private:
     State state_____Finished( const UMLRTMessage * msg );
     State state_____Playing( const UMLRTMessage * msg );
     State state_____Waiting( const UMLRTMessage * msg );
-    State state_____moveTest( const UMLRTMessage * msg );
+    State state_____checkingDirection( const UMLRTMessage * msg );
 };
 extern const UMLRTCapsuleClass TestCont;
 

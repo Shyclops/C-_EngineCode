@@ -17,12 +17,14 @@ public:
     {
         part_calculation,
         part_detection,
+        part_observer,
         part_test,
         part_testCont
     };
 protected:
     const UMLRTCapsulePart * const calculation;
     const UMLRTCapsulePart * const detection;
+    const UMLRTCapsulePart * const observer;
     const UMLRTCapsulePart * const test;
     const UMLRTCapsulePart * const testCont;
 public:

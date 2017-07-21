@@ -29,7 +29,7 @@ CC_INCLUDES:=$(foreach i, $(CC_INCLUDES), $(CC_INC)$i)
 LD_LIBS:=$(foreach i, $(LD_LIBS), $(LD_LIB)$i)
 LD_PATHS:=$(foreach i, $(LD_PATHS), $(LD_LIBPATH)$i)
 
-SRCS = TopMain.cc Directions.cc PreExecute.cc TestCont.cc Detection.cc Calculation.cc Test.cc Top.cc TopControllers.cc 
+SRCS = TopMain.cc Directions.cc PreExecute.cc TestCont.cc Detection.cc Calculation.cc Test.cc Observation.cc Observer.cc Top.cc TopControllers.cc Method.cc Config.cc Serializer.cc Event.cc Socket.cc Text.cc ClientSocket.cc 
 OBJS = $(subst $(CC_EXT),$(OBJ_EXT),$(SRCS))
 
 CFLAGS = `pkg-config --cflags opencv`

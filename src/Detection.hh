@@ -3,6 +3,7 @@
 #define DETECTION_HH
 
 #include "Directions.hh"
+#include "Observation.hh"
 #include "Test.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
@@ -25,15 +26,17 @@ public:
     };
 protected:
     UMLRTLogProtocol_baserole log;
-    Test::Base test;
+    Observation::Base observation;
 public:
     enum InternalPortId
     {
+        internalport_observation,
         internalport_test,
         internalport_timing,
         internalport_log
     };
 protected:
+    Test::Base test;
     UMLRTTimerProtocol_baserole timing;
 public:
     enum PartId
@@ -43,6 +46,7 @@ public:
     {
         port_directions,
         port_log,
+        port_observation,
         port_test,
         port_timing
     };

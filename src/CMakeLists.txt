@@ -1,4 +1,4 @@
-# Generated 2017-07-10 19:48:19
+# Generated 2017-07-21 11:05:34
 
 cmake_minimum_required(VERSION 2.8.7)
 set(TARGET TopMain)
@@ -17,7 +17,7 @@ endif ()
 include(${UMLRTS_ROOT}/build/buildenv.cmake)
 
 # model sources
-set(SRCS TopMain.cc Directions.cc PreExecute.cc TestCont.cc Detection.cc Calculation.cc Test.cc Top.cc TopControllers.cc )
+set(SRCS TopMain.cc Directions.cc PreExecute.cc TestCont.cc Detection.cc Calculation.cc Test.cc Observation.cc Observer.cc Top.cc TopControllers.cc Method.cc Config.cc Serializer.cc Event.cc Socket.cc Text.cc ClientSocket.cc )
 
 # specify target
 add_executable(${TARGET} ${SRCS})

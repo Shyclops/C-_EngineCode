@@ -19,6 +19,7 @@ using namespace std;
 Capsule_Detection::Capsule_Detection( const UMLRTCapsuleClass * cd, UMLRTSlot * st, const UMLRTCommsPort * * border, const UMLRTCommsPort * * internal, bool isStat )
 : UMLRTCapsule( NULL, cd, st, border, internal, isStat )
 , directions( borderPorts[borderport_directions] )
+, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , timing( internalPorts[internalport_timing] )
 , ESC_KEY( 27 )
@@ -31,6 +32,7 @@ Capsule_Detection::Capsule_Detection( const UMLRTCapsuleClass * cd, UMLRTSlot * 
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
+
 
 
 
@@ -163,14 +165,10 @@ void Capsule_Detection::transitionaction_____transition2( const UMLRTMessage * m
 {
     #define X ( *(int *)msg->getParam( 0 ) )
     #define Y ( *(int *)msg->getParam( 1 ) )
-    #define Height ( *(int *)msg->getParam( 2 ) )
-    #define Width ( *(int *)msg->getParam( 3 ) )
     #define rtdata ( (int *)msg->getParam( 0 ) )
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::Detection transition Waiting,Playing,isReadyIn:test */
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
-    #undef Width
-    #undef Height
     #undef Y
     #undef X
 }
@@ -277,6 +275,20 @@ static const UMLRTCommsPortRole portroles_border[] =
 static const UMLRTCommsPortRole portroles_internal[] = 
 {
     {
+        Capsule_Detection::port_observation,
+        "Observation",
+        "observation",
+        "",
+        1,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false
+    },
+    {
         Capsule_Detection::port_test,
         "Test",
         "test",
@@ -335,7 +347,7 @@ const UMLRTCapsuleClass Detection =
     NULL,
     1,
     portroles_border,
-    3,
+    4,
     portroles_internal
 };
 

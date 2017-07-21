@@ -12,30 +12,21 @@
 class UMLRTRtsInterface;
 struct UMLRTCommsPort;
 
-#include <X11/Xlib.h>
-#include "external_resources/opencv/sources/modules/core/include/opencv2/core.hpp"
-#include "external_resources/opencv/sources/modules/highgui/include/opencv2/highgui.hpp"
-#include "external_resources/opencv/sources/modules/imgcodecs/include/opencv2/imgcodecs.hpp"
-#include "external_resources/opencv/sources/modules/imgproc/include/opencv2/imgproc.hpp"
-using namespace cv;
-
 Capsule_PreExecute::Capsule_PreExecute( const UMLRTCapsuleClass * cd, UMLRTSlot * st, const UMLRTCommsPort * * border, const UMLRTCommsPort * * internal, bool isStat )
 : UMLRTCapsule( NULL, cd, st, border, internal, isStat )
 , directions( internalPorts[internalport_directions] )
+, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , test2( borderPorts[borderport_test2] )
-, x( 0 )
-, y( 0 )
-, height( 0 )
-, width( 0 )
 , currentState( SPECIAL_INTERNAL_STATE_UNVISITED )
 {
     stateNames[Exited] = "Exited";
-    stateNames[Finished] = "Finished";
-    stateNames[Main] = "Main";
+    stateNames[Found] = "Found";
+    stateNames[Waiting] = "Waiting";
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
+
 
 
 
@@ -68,22 +59,16 @@ void Capsule_PreExecute::unbindPort( bool isBorder, int portId, int index )
         }
 }
 
-
-
-
-
-
-
 void Capsule_PreExecute::inject( const UMLRTMessage & message )
 {
     msg = &message;
     switch( currentState )
     {
-    case Main:
-        currentState = state_____Main( &message );
+    case Waiting:
+        currentState = state_____Waiting( &message );
         break;
-    case Finished:
-        currentState = state_____Finished( &message );
+    case Found:
+        currentState = state_____Found( &message );
         break;
     case Exited:
         currentState = state_____Exited( &message );
@@ -97,7 +82,7 @@ void Capsule_PreExecute::initialize( const UMLRTMessage & message )
 {
     msg = &message;
     actionchain_____Initial( &message );
-    currentState = Main;
+    currentState = Waiting;
 }
 
 const char * Capsule_PreExecute::getCurrentStateString() const
@@ -121,163 +106,91 @@ void Capsule_PreExecute::entryaction_____Exited( const UMLRTMessage * msg )
     #undef rtdata
 }
 
-void Capsule_PreExecute::entryaction_____Finished( const UMLRTMessage * msg )
+void Capsule_PreExecute::entryaction_____Found( const UMLRTMessage * msg )
+{
+    #define X ( *(int *)msg->getParam( 0 ) )
+    #define Y ( *(int *)msg->getParam( 1 ) )
+    #define rtdata ( (int *)msg->getParam( 0 ) )
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Found entry  */
+    /* UMLRTGEN-USERREGION-END */
+    #undef rtdata
+    #undef Y
+    #undef X
+}
+
+void Capsule_PreExecute::entryaction_____Waiting( const UMLRTMessage * msg )
 {
     #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Finished entry  */
-    log.log("Pre-execution done");
-    test.isReadyIn(x,y,height,width).send();
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Waiting entry  */
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
 }
 
-void Capsule_PreExecute::entryaction_____Main( const UMLRTMessage * msg )
+void Capsule_PreExecute::exitaction_____Waiting( const UMLRTMessage * msg )
 {
-    #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Main entry  */
-    Vec3b intensity = map.at<Vec3b>(y, x);
-    r = intensity.val[2];
-    test2.isStartIn(r).send();
+    #define X ( *(int *)msg->getParam( 0 ) )
+    #define Y ( *(int *)msg->getParam( 1 ) )
+    #define rtdata ( (int *)msg->getParam( 0 ) )
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Waiting exit  */
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
-}
-
-void Capsule_PreExecute::exitaction_____Main( const UMLRTMessage * msg )
-{
-    #define Flag ( *(bool *)msg->getParam( 0 ) )
-    #define rtdata ( (bool *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute::Main exit  */
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-    #undef Flag
+    #undef Y
+    #undef X
 }
 
 void Capsule_PreExecute::transitionaction_____Initial( const UMLRTMessage * msg )
 {
     #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition subvertex0,Main */
-    map = imread("external_resources/map.png");
-    width = map.size().width;
-    height = map.size().height;
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition subvertex0,Waiting */
+    test2.isStartIn(0,0).send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
 }
 
 void Capsule_PreExecute::transitionaction_____transition1( const UMLRTMessage * msg )
 {
-    #define Flag ( *(bool *)msg->getParam( 0 ) )
-    #define rtdata ( (bool *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition Main,subvertex4,isStartOut:test2 */
+    #define rtdata ( (void *)msg->getParam( 0 ) )
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition Found,Exited,exit:directions */
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
-    #undef Flag
 }
 
 void Capsule_PreExecute::transitionaction_____transition2( const UMLRTMessage * msg )
 {
-    #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition Finished,Exited,exit:directions */
+    #define X ( *(int *)msg->getParam( 0 ) )
+    #define Y ( *(int *)msg->getParam( 1 ) )
+    #define rtdata ( (int *)msg->getParam( 0 ) )
+    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition Waiting,Found,isStartOut:test2 */
+    log.log("Pre-execution done");
+    test.isReadyIn(X,Y).send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
-}
-
-void Capsule_PreExecute::transitionaction_____transition3( const UMLRTMessage * msg )
-{
-    #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition subvertex4,Finished */
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-}
-
-void Capsule_PreExecute::transitionaction_____transition4( const UMLRTMessage * msg )
-{
-    #define rtdata ( (void *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition subvertex4,Main */
-    if (x != width){
-    x++;
-    } else {
-    if (y != height){
-    y++;
-    x = 0;
-    }else{
-    log.log("FAILURE");
-    while(true){};
-    }}
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-}
-
-bool Capsule_PreExecute::guard_____transition3( const UMLRTMessage * msg )
-{
-    #define Flag ( *(bool *)msg->getParam( 0 ) )
-    #define rtdata ( (bool *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute guard subvertex4,Finished */
-    return Flag;
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-    #undef Flag
-}
-
-bool Capsule_PreExecute::guard_____transition4( const UMLRTMessage * msg )
-{
-    #define Flag ( *(bool *)msg->getParam( 0 ) )
-    #define rtdata ( (bool *)msg->getParam( 0 ) )
-    /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute guard subvertex4,Main */
-    return !Flag;
-    /* UMLRTGEN-USERREGION-END */
-    #undef rtdata
-    #undef Flag
+    #undef Y
+    #undef X
 }
 
 void Capsule_PreExecute::actionchain_____Initial( const UMLRTMessage * msg )
 {
     transitionaction_____Initial( msg );
-    update_state( Main );
-    entryaction_____Main( msg );
+    update_state( Waiting );
+    entryaction_____Waiting( msg );
 }
 
 void Capsule_PreExecute::actionchain_____transition1( const UMLRTMessage * msg )
 {
-    exitaction_____Main( msg );
     update_state( SPECIAL_INTERNAL_STATE_TOP );
     transitionaction_____transition1( msg );
-}
-
-void Capsule_PreExecute::actionchain_____transition2( const UMLRTMessage * msg )
-{
-    update_state( SPECIAL_INTERNAL_STATE_TOP );
-    transitionaction_____transition2( msg );
     update_state( Exited );
     entryaction_____Exited( msg );
 }
 
-void Capsule_PreExecute::actionchain_____transition3( const UMLRTMessage * msg )
+void Capsule_PreExecute::actionchain_____transition2( const UMLRTMessage * msg )
 {
-    transitionaction_____transition3( msg );
-    update_state( Finished );
-    entryaction_____Finished( msg );
-}
-
-void Capsule_PreExecute::actionchain_____transition4( const UMLRTMessage * msg )
-{
-    transitionaction_____transition4( msg );
-    update_state( Main );
-    entryaction_____Main( msg );
-}
-
-Capsule_PreExecute::State Capsule_PreExecute::choice_____subvertex4( const UMLRTMessage * msg )
-{
-    if( guard_____transition3( msg ) )
-    {
-        actionchain_____transition3( msg );
-        return Finished;
-    }
-    else if( guard_____transition4( msg ) )
-    {
-        actionchain_____transition4( msg );
-        return Main;
-    }
-    return currentState;
+    exitaction_____Waiting( msg );
+    update_state( SPECIAL_INTERNAL_STATE_TOP );
+    transitionaction_____transition2( msg );
+    update_state( Found );
+    entryaction_____Found( msg );
 }
 
 Capsule_PreExecute::State Capsule_PreExecute::state_____Exited( const UMLRTMessage * msg )
@@ -291,7 +204,7 @@ Capsule_PreExecute::State Capsule_PreExecute::state_____Exited( const UMLRTMessa
     return currentState;
 }
 
-Capsule_PreExecute::State Capsule_PreExecute::state_____Finished( const UMLRTMessage * msg )
+Capsule_PreExecute::State Capsule_PreExecute::state_____Found( const UMLRTMessage * msg )
 {
     switch( msg->destPort->role()->id )
     {
@@ -299,7 +212,7 @@ Capsule_PreExecute::State Capsule_PreExecute::state_____Finished( const UMLRTMes
         switch( msg->getSignalId() )
         {
         case Directions::signal_exit:
-            actionchain_____transition2( msg );
+            actionchain_____transition1( msg );
             return Exited;
         default:
             this->unexpectedMessage();
@@ -313,7 +226,7 @@ Capsule_PreExecute::State Capsule_PreExecute::state_____Finished( const UMLRTMes
     return currentState;
 }
 
-Capsule_PreExecute::State Capsule_PreExecute::state_____Main( const UMLRTMessage * msg )
+Capsule_PreExecute::State Capsule_PreExecute::state_____Waiting( const UMLRTMessage * msg )
 {
     switch( msg->destPort->role()->id )
     {
@@ -321,8 +234,8 @@ Capsule_PreExecute::State Capsule_PreExecute::state_____Main( const UMLRTMessage
         switch( msg->getSignalId() )
         {
         case Test::signal_isStartOut:
-            actionchain_____transition1( msg );
-            return choice_____subvertex4( msg );
+            actionchain_____transition2( msg );
+            return Found;
         default:
             this->unexpectedMessage();
             break;
@@ -364,6 +277,20 @@ static const UMLRTCommsPortRole portroles_internal[] =
         1,
         true,
         true,
+        false,
+        false,
+        true,
+        false,
+        false
+    },
+    {
+        Capsule_PreExecute::port_observation,
+        "Observation",
+        "observation",
+        "",
+        1,
+        true,
+        false,
         false,
         false,
         true,
@@ -415,7 +342,7 @@ const UMLRTCapsuleClass PreExecute =
     NULL,
     1,
     portroles_border,
-    3,
+    4,
     portroles_internal
 };
 
