@@ -12,6 +12,7 @@
 struct UMLRTCommsPort;
 struct UMLRTSlot;
 
+#include <vector>
 #include "external_resources/opencv/sources/modules/core/include/opencv2/core.hpp"
 #include "external_resources/opencv/sources/modules/highgui/include/opencv2/highgui.hpp"
 #include "external_resources/opencv/sources/modules/imgcodecs/include/opencv2/imgcodecs.hpp"

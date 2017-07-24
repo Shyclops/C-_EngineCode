@@ -183,8 +183,7 @@ void Capsule_TestCont::transitionaction_____transition3( const UMLRTMessage * ms
     y = Y;
     Event e1;
     e1.setSourceName(this->getName());
-    e1.setParam("x", x);
-    e1.setParam("y", y);
+    e1.setParam("cmd", "update");
     observation.event(e1).send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
