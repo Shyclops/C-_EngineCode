@@ -2,7 +2,7 @@
 #ifndef OBSERVATION_HH
 #define OBSERVATION_HH
 
-#include "Event.hh"
+#include "EventObj.hh"
 #include "umlrtoutsignal.hh"
 #include "umlrtprotocol.hh"
 #include "umlrtsignal.hh"
@@ -14,7 +14,7 @@ namespace Observation
     {
     public:
         Base( const UMLRTCommsPort * & srcPort );
-        UMLRTOutSignal event( const Event & data ) const;
+        UMLRTOutSignal event( const EventObj & data ) const;
     };
     class Conj : public UMLRTProtocol
     {

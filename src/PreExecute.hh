@@ -3,8 +3,7 @@
 #define PREEXECUTE_HH
 
 #include "Directions.hh"
-#include "Observation.hh"
-#include "Test.hh"
+#include "Status.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
 #include "umlrtlogprotocol.hh"
@@ -22,15 +21,13 @@ public:
     enum InternalPortId
     {
         internalport_directions,
-        internalport_observation,
         internalport_test,
         internalport_log
     };
 protected:
     UMLRTLogProtocol_baserole log;
-    Observation::Base observation;
-    Test::Conj test;
-    Test::Conj test2;
+    Status::Conj test;
+    Status::Conj test2;
 public:
     enum BorderPortId
     {
@@ -43,7 +40,6 @@ public:
     {
         port_directions,
         port_log,
-        port_observation,
         port_test,
         port_test2
     };

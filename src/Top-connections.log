@@ -1,3 +1,7 @@
+Top.RTConnector10
+    Top.zombieBehavior#test.far[0] <-> Top.calculation#test2.far[0]
+Top.RTConnector11
+    Top.zombieBehavior#directions.far[0] <-> Top.calculation#directions2.far[0]
 Top.RTConnector7
     Top.testCont#directions2.far[0] <-> Top.calculation#directions.far[0]
 Top.RTConnector8

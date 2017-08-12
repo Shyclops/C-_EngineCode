@@ -3,7 +3,6 @@
 #define TESTCONT_HH
 
 #include "Directions.hh"
-#include "Observation.hh"
 #include "Test.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
@@ -31,13 +30,11 @@ public:
     enum InternalPortId
     {
         internalport_directions3,
-        internalport_observation,
         internalport_test,
         internalport_log
     };
 protected:
     UMLRTLogProtocol_baserole log;
-    Observation::Base observation;
     Test::Base test;
 public:
     enum PartId
@@ -49,7 +46,6 @@ public:
         port_directions2,
         port_directions3,
         port_log,
-        port_observation,
         port_test
     };
     virtual void bindPort( bool isBorder, int portId, int index );

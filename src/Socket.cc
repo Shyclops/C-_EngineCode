@@ -2,6 +2,15 @@
 #include "Socket.hh"
 
 
+/*
+* Socket.cc
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
+
+#include "Socket.hh"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,16 +23,16 @@
 #include <sstream>
 
 // get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
-{
+void *get_in_addr(struct sockaddr *sa) {
 if (sa->sa_family == AF_INET) {
-return &(((struct sockaddr_in*)sa)->sin_addr);
+return &(((struct sockaddr_in*) sa)->sin_addr);
 }
 
-return &(((struct sockaddr_in6*)sa)->sin6_addr);
+return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
-Socket::Socket() : Method() {
+Socket::Socket() :
+Method() {
 this->setPort(8080);
 this->setAddress("localhost");
 }
@@ -32,7 +41,6 @@ Socket::~Socket() {
 }
 
 void Socket::configure(std::map<std::string, std::string> configList) {
-
 
 std::string port, address;
 port = this->getConfig(configList, "port");
@@ -51,7 +59,7 @@ const bool Socket::canConnect() const {
 return true;
 }
 
-int Socket::establishConnection() {
+int Socket::connect() {
 
 int rv, result = -1;
 struct addrinfo hints, *ai, *p;
@@ -60,10 +68,8 @@ int yes = 1;   // for setsockopt
 std::stringstream port;
 port << this->getPort();
 
-
 tv.tv_sec = 0;
 tv.tv_usec = 0;
-
 
 FD_ZERO(&master);    // clear the master and temp sets
 FD_ZERO(&read_fds);
@@ -78,9 +84,9 @@ fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
 exit(1);
 }
 
-for(p = ai; p != NULL; p = p->ai_next) {
+for (p = ai; p != NULL; p = p->ai_next) {
 listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-if (listener < 0) { 
+if (listener < 0) {
 continue;
 }
 
@@ -122,11 +128,11 @@ return result;
 void Socket::disconnect() {
 }
 
-void Socket::read() {
+std::string Socket::read() {
 
 // main loop
 read_fds = master; // copy it
-int rc = select(fdmax+1, &read_fds, NULL, NULL, &tv); 
+int rc = select(fdmax + 1, &read_fds, NULL, NULL, &tv);
 if (rc == -1) {
 perror("select");
 exit(4);
@@ -137,20 +143,18 @@ tv.tv_usec = 0;
 
 if (rc == 0) {
 //   printf("timeout\n");
-return;
+return "";
 }
-
 
 int i = 0;
 
 // run through the existing connections looking for data to read
-for(i = 0; i <= fdmax; i++) {
+for (i = 0; i <= fdmax; i++) {
 if (FD_ISSET(i, &read_fds)) { // we got one!!
 if (i == listener) {
 // handle new connections
 addrlen = sizeof remoteaddr;
-int newfd = accept(listener,
-(struct sockaddr *)&remoteaddr,
+int newfd = accept(listener, (struct sockaddr *) &remoteaddr,
 &addrlen);
 
 char remoteIP[INET6_ADDRSTRLEN];
@@ -165,9 +169,8 @@ fdmax = newfd;
 printf("new connection from %s on "
 "socket %d\n",
 inet_ntop(remoteaddr.ss_family,
-get_in_addr((struct sockaddr*)&remoteaddr),
-remoteIP, INET6_ADDRSTRLEN),
-newfd);
+get_in_addr((struct sockaddr*) &remoteaddr),
+remoteIP, INET6_ADDRSTRLEN), newfd);
 }
 } else {
 char buf[256];    // buffer for client data
@@ -184,6 +187,8 @@ perror("recv");
 close(i); // bye!
 FD_CLR(i, &master); // remove from master set
 } else {
+std::string str(buf, buf + nbytes - 2);
+return str;
 //    printf("new data: %s\n", buf);
 //    // we got some data from a client
 //    int j = 0;
@@ -202,11 +207,12 @@ FD_CLR(i, &master); // remove from master set
 } // END handle data from client
 } // END got new incoming connection
 } // END looping through file descriptors
+return "";
 }
 
 void Socket::sendData(std::string data) {
 int j = 0;
-for(j = 0; j <= fdmax; j++) {
+for (j = 0; j <= fdmax; j++) {
 // send to everyone
 if (FD_ISSET(j, &master)) {
 // no exception

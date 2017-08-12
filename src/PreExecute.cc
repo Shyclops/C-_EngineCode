@@ -2,7 +2,7 @@
 #include "PreExecute.hh"
 
 #include "Directions.hh"
-#include "Test.hh"
+#include "Status.hh"
 #include "umlrtcapsuleclass.hh"
 #include "umlrtcommsportrole.hh"
 #include "umlrtframeservice.hh"
@@ -15,7 +15,6 @@ struct UMLRTCommsPort;
 Capsule_PreExecute::Capsule_PreExecute( const UMLRTCapsuleClass * cd, UMLRTSlot * st, const UMLRTCommsPort * * border, const UMLRTCommsPort * * internal, bool isStat )
 : UMLRTCapsule( NULL, cd, st, border, internal, isStat )
 , directions( internalPorts[internalport_directions] )
-, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , test2( borderPorts[borderport_test2] )
 , currentState( SPECIAL_INTERNAL_STATE_UNVISITED )
@@ -26,7 +25,6 @@ Capsule_PreExecute::Capsule_PreExecute( const UMLRTCapsuleClass * cd, UMLRTSlot 
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
-
 
 
 
@@ -142,7 +140,7 @@ void Capsule_PreExecute::transitionaction_____Initial( const UMLRTMessage * msg 
 {
     #define rtdata ( (void *)msg->getParam( 0 ) )
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::PreExecute transition subvertex0,Waiting */
-    test2.isStartIn(0,0).send();
+    test2.isStartIn().send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
 }
@@ -233,7 +231,7 @@ Capsule_PreExecute::State Capsule_PreExecute::state_____Waiting( const UMLRTMess
     case port_test2:
         switch( msg->getSignalId() )
         {
-        case Test::signal_isStartOut:
+        case Status::signal_isStartOut:
             actionchain_____transition2( msg );
             return Found;
         default:
@@ -253,7 +251,7 @@ static const UMLRTCommsPortRole portroles_border[] =
 {
     {
         Capsule_PreExecute::port_test2,
-        "Test",
+        "Status",
         "test2",
         "",
         1,
@@ -284,22 +282,8 @@ static const UMLRTCommsPortRole portroles_internal[] =
         false
     },
     {
-        Capsule_PreExecute::port_observation,
-        "Observation",
-        "observation",
-        "",
-        1,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false
-    },
-    {
         Capsule_PreExecute::port_test,
-        "Test",
+        "Status",
         "test",
         "",
         2,
@@ -342,7 +326,7 @@ const UMLRTCapsuleClass PreExecute =
     NULL,
     1,
     portroles_border,
-    4,
+    3,
     portroles_internal
 };
 

@@ -2,17 +2,24 @@
 #ifndef SOCKET_HH
 #define SOCKET_HH
 
-#include "Method.hh"
-#include <string>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+/*
+* Socket.hh
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
 
-class Socket : public Method {
+#ifndef SOCKET_HH_
+#define SOCKET_HH_
+
+#include <arpa/inet.h>
+#include "Method.hh"
+#include <netinet/in.h>
+#include <sys/select.h>
+#include <map>
+#include <string>
+
+class Socket: public Method {
 
 private:
 int port;
@@ -35,9 +42,9 @@ Socket();
 virtual ~Socket();
 virtual void configure(std::map<std::string, std::string> configList);
 virtual const bool canConnect() const;
-virtual int establishConnection();
+virtual int connect();
 virtual void disconnect();
-virtual void read();
+virtual std::string read();
 virtual void sendData(std::string data);
 
 const int getPort() const;
@@ -46,6 +53,8 @@ void setPort(const int port);
 const std::string getAddress() const;
 void setAddress(const std::string address);
 };
+
+#endif /* SOCKET_HH_ */
 
 
 #endif

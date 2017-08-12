@@ -1,6 +1,7 @@
 
 #include "Test.hh"
 
+#include "VectorWrapper.hh"
 #include "umlrtobjectclass.hh"
 #include "umlrtoutsignal.hh"
 #include <cstddef>
@@ -37,34 +38,28 @@ static UMLRTObject payload_isReadyIn =
     fields_isReadyIn
 };
 
-struct params_isStartIn
-{
-    int X;
-    int Y;
-};
-
 static UMLRTObject_field fields_isStartIn[] = 
 {
+    #ifdef NEED_NON_FLEXIBLE_ARRAY
     {
-        "X",
-        &UMLRTType_int,
-        offsetof( params_isStartIn, X ),
-        1,
-        0
-    },
-    {
-        "Y",
-        &UMLRTType_int,
-        offsetof( params_isStartIn, Y ),
-        1,
+        0,
+        0,
+        0,
+        0,
         0
     }
+    #endif
 };
 
 static UMLRTObject payload_isStartIn = 
 {
-    sizeof( params_isStartIn ),
-    2,
+    0,
+    #ifdef NEED_NON_FLEXIBLE_ARRAY
+    1
+    #else
+    0
+    #endif
+    ,
     fields_isStartIn
 };
 
@@ -130,6 +125,37 @@ static UMLRTObject payload_isStartOut =
     fields_isStartOut
 };
 
+struct params_zombieOut
+{
+    VectorWrapper data;
+    int max;
+};
+
+static UMLRTObject_field fields_zombieOut[] = 
+{
+    {
+        "data",
+        &UMLRTType_VectorWrapper,
+        offsetof( params_zombieOut, data ),
+        1,
+        0
+    },
+    {
+        "max",
+        &UMLRTType_int,
+        offsetof( params_zombieOut, max ),
+        1,
+        0
+    }
+};
+
+static UMLRTObject payload_zombieOut = 
+{
+    sizeof( params_zombieOut ),
+    2,
+    fields_zombieOut
+};
+
 Test::Conj::Conj( const UMLRTCommsPort * & srcPort )
 : UMLRTProtocol( srcPort )
 {
@@ -142,10 +168,10 @@ UMLRTOutSignal Test::Conj::isReadyIn( int X, int Y ) const
     return signal;
 }
 
-UMLRTOutSignal Test::Conj::isStartIn( int X, int Y ) const
+UMLRTOutSignal Test::Conj::isStartIn() const
 {
     UMLRTOutSignal signal;
-    signal.initialize( "isStartIn", signal_isStartIn, srcPort, &payload_isStartIn, &X, &Y );
+    signal.initialize( "isStartIn", signal_isStartIn, srcPort, &payload_isStartIn );
     return signal;
 }
 
@@ -165,6 +191,13 @@ UMLRTOutSignal Test::Base::isStartOut( int X, int Y ) const
 {
     UMLRTOutSignal signal;
     signal.initialize( "isStartOut", signal_isStartOut, srcPort, &payload_isStartOut, &X, &Y );
+    return signal;
+}
+
+UMLRTOutSignal Test::Base::zombieOut( const VectorWrapper & data, int max ) const
+{
+    UMLRTOutSignal signal;
+    signal.initialize( "zombieOut", signal_zombieOut, srcPort, &payload_zombieOut, &data, &max );
     return signal;
 }
 

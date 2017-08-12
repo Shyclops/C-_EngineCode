@@ -29,7 +29,7 @@ CC_INCLUDES:=$(foreach i, $(CC_INCLUDES), $(CC_INC)$i)
 LD_LIBS:=$(foreach i, $(LD_LIBS), $(LD_LIB)$i)
 LD_PATHS:=$(foreach i, $(LD_PATHS), $(LD_LIBPATH)$i)
 
-SRCS = TopMain.cc Directions.cc PreExecute.cc TestCont.cc Detection.cc Calculation.cc Test.cc Observation.cc Observer.cc Top.cc TopControllers.cc Method.cc Config.cc Serializer.cc Event.cc Socket.cc Text.cc ClientSocket.cc 
+SRCS = TopMain.cc Directions.cc PreExecute.cc Running.cc Detection.cc Calculation.cc ZombieBehavior.cc Status.cc VectorWrapper.cc Zombie.cc Vector.cc EventObj.cc Observation.cc Observer.cc Top.cc TopControllers.cc Event.cc CLIUtils.cc Serializer.cc Method.cc Text.cc Socket.cc Config.cc 
 OBJS = $(subst $(CC_EXT),$(OBJ_EXT),$(SRCS))
 
 CFLAGS = `pkg-config --cflags opencv`
@@ -41,7 +41,6 @@ all: $(MAIN)
 
 $(MAIN): $(OBJS) $(UMLRTS_ROOT)/lib/$(CONFIG)/$(LIB_PRFX)rts$(LIB_EXT)
 	$(LD) $(LD_FLAGS) $(OBJS) $(CFLAGS) $(LIBS) $(LD_PATHS) $(LD_LIBS) $(LD_OUT)$@
-
 %$(OBJ_EXT) : %$(CC_EXT)
 	$(CC) $< $(CC_FLAGS) $(CC_DEFINES) $(CC_INCLUDES) $(CC_OUT)$@
 

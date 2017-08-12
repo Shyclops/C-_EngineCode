@@ -1,7 +1,7 @@
 
 #include "Detection.hh"
 
-#include "Test.hh"
+#include "Status.hh"
 #include "umlrtcommsportrole.hh"
 #include "umlrtmessage.hh"
 #include "umlrtslot.hh"
@@ -19,7 +19,6 @@ using namespace std;
 Capsule_Detection::Capsule_Detection( const UMLRTCapsuleClass * cd, UMLRTSlot * st, const UMLRTCommsPort * * border, const UMLRTCommsPort * * internal, bool isStat )
 : UMLRTCapsule( NULL, cd, st, border, internal, isStat )
 , directions( borderPorts[borderport_directions] )
-, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , timing( internalPorts[internalport_timing] )
 , ESC_KEY( 27 )
@@ -32,7 +31,6 @@ Capsule_Detection::Capsule_Detection( const UMLRTCapsuleClass * cd, UMLRTSlot * 
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
-
 
 
 
@@ -238,7 +236,7 @@ Capsule_Detection::State Capsule_Detection::state_____Waiting( const UMLRTMessag
     case port_test:
         switch( msg->getSignalId() )
         {
-        case Test::signal_isReadyIn:
+        case Status::signal_isReadyIn:
             actionchain_____transition2( msg );
             return Playing;
         default:
@@ -275,22 +273,8 @@ static const UMLRTCommsPortRole portroles_border[] =
 static const UMLRTCommsPortRole portroles_internal[] = 
 {
     {
-        Capsule_Detection::port_observation,
-        "Observation",
-        "observation",
-        "",
-        1,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false
-    },
-    {
         Capsule_Detection::port_test,
-        "Test",
+        "Status",
         "test",
         "",
         1,
@@ -347,7 +331,7 @@ const UMLRTCapsuleClass Detection =
     NULL,
     1,
     portroles_border,
-    4,
+    3,
     portroles_internal
 };
 

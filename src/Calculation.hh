@@ -4,7 +4,8 @@
 
 #include "Directions.hh"
 #include "Observation.hh"
-#include "Test.hh"
+#include "Status.hh"
+#include "Vector.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
 #include "umlrtlogprotocol.hh"
@@ -12,7 +13,7 @@
 struct UMLRTCommsPort;
 struct UMLRTSlot;
 
-#include <vector>
+#include "Zombie.hh"
 #include "external_resources/opencv/sources/modules/core/include/opencv2/core.hpp"
 #include "external_resources/opencv/sources/modules/highgui/include/opencv2/highgui.hpp"
 #include "external_resources/opencv/sources/modules/imgcodecs/include/opencv2/imgcodecs.hpp"
@@ -29,21 +30,25 @@ public:
     enum BorderPortId
     {
         borderport_directions,
-        borderport_test
+        borderport_directions2,
+        borderport_test,
+        borderport_test2
     };
 protected:
     Directions::Base directions2;
+    Directions::Base directions3;
 public:
     enum InternalPortId
     {
-        internalport_directions2,
+        internalport_directions3,
         internalport_observation,
         internalport_log
     };
 protected:
     UMLRTLogProtocol_baserole log;
     Observation::Base observation;
-    Test::Base test;
+    Status::Base test;
+    Status::Base test2;
 public:
     enum PartId
     {
@@ -52,22 +57,27 @@ public:
     {
         port_directions,
         port_directions2,
+        port_directions3,
         port_log,
         port_observation,
-        port_test
+        port_test,
+        port_test2
     };
     virtual void bindPort( bool isBorder, int portId, int index );
     virtual void unbindPort( bool isBorder, int portId, int index );
 private:
     int startR;
     int emptyR;
+    int zombieR;
     Mat map;
-    bool flag;
     int x;
     int y;
     int height;
     int width;
+    Vector zombieVector;
+    int zombies;
 public:
+    int startDirection;
     virtual void inject( const UMLRTMessage & message );
     virtual void initialize( const UMLRTMessage & message );
     const char * getCurrentStateString() const;

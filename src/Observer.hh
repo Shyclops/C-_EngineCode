@@ -2,7 +2,6 @@
 #ifndef OBSERVER_HH
 #define OBSERVER_HH
 
-#include "Config.hh"
 #include "Observation.hh"
 #include "umlrtcapsule.hh"
 #include "umlrtcapsuleclass.hh"
@@ -14,9 +13,10 @@ struct UMLRTSlot;
 
 #include "Method.hh"
 #include "Socket.hh"
-#include "ClientSocket.hh"
 #include "Serializer.hh"
 #include "Text.hh"
+#include "CLIUtils.hh"
+#include "Config.hh"
 
 class Capsule_Observer : public UMLRTCapsule
 {
@@ -46,10 +46,12 @@ public:
     };
     virtual void bindPort( bool isBorder, int portId, int index );
     virtual void unbindPort( bool isBorder, int portId, int index );
-    Config config;
 private:
     Method* method;
     Serializer* serializer;
+    std::map<std::string, size_t> capsules;
+    std::map<std::string, std::string> capsuleTypes;
+    Config config;
 
 public:
     virtual void inject( const UMLRTMessage & message );
@@ -65,12 +67,14 @@ private:
     const char * stateNames[3];
     State currentState;
     void update_state( State newState );
+    void transitionaction_____command_received( const UMLRTMessage * msg );
     void transitionaction_____configure( const UMLRTMessage * msg );
-    void transitionaction_____read( const UMLRTMessage * msg );
-    void transitionaction_____transition1( const UMLRTMessage * msg );
+    void transitionaction_____event_received( const UMLRTMessage * msg );
+    void transitionaction_____register_capsules( const UMLRTMessage * msg );
+    void actionchain_____command_received( const UMLRTMessage * msg );
     void actionchain_____configure( const UMLRTMessage * msg );
-    void actionchain_____read( const UMLRTMessage * msg );
-    void actionchain_____transition1( const UMLRTMessage * msg );
+    void actionchain_____event_received( const UMLRTMessage * msg );
+    void actionchain_____register_capsules( const UMLRTMessage * msg );
     State state_____OBSERVING( const UMLRTMessage * msg );
 };
 extern const UMLRTCapsuleClass Observer;

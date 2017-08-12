@@ -2,26 +2,24 @@
 #include "Event.hh"
 
 
+/*
+* Event.cc
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
+
+#include "Event.hh"
+
 #include <string>
 #include <sstream>
 #include <time.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "umlrtobjectclass.hh"
-#include "umlrtobjectclassgeneric.hh"
 
-const UMLRTObject_field Event::fields[] = 
-{
-};
-
-
-
-Event::Event(std::string capsuleInstance,
-std::string sourceName,
-EventSource eventSource,
-EventKind eventKind,
-long seconds,
+Event::Event(std::string capsuleInstance, std::string sourceName,
+EventSource eventSource, EventKind eventKind, long seconds,
 long nanoseconds) {
 
 this->generateEventId();
@@ -119,7 +117,7 @@ nanoseconds = tp.tv_usec * 1000;
 
 std::stringstream ss;
 int r;
-r=random();
+r = random();
 
 ss << seconds << nanoseconds << r;
 this->eventId = ss.str();
@@ -134,16 +132,16 @@ bool n = this->params.count(key);
 return (n) ? this->params.at(key) : "";
 }
 
-void Event::setParams(const  std::map<std::string, std::string> params) {
+void Event::setParams(const std::map<std::string, std::string> params) {
 this->params = params;
 }
 
-void Event::setParam(const  std::string key, const std::string value) {
+void Event::setParam(const std::string key, const std::string value) {
 if (key.length() >= 1)
 this->params[key] = value;
 }
 
-void Event::setParam(const  std::string key, const int value) {
+void Event::setParam(const std::string key, const int value) {
 std::stringstream v;
 v << value;
 this->setParam(key, v.str());
@@ -152,23 +150,4 @@ this->setParam(key, v.str());
 void Event::clearParams() {
 this->params.clear();
 }
-
-const UMLRTObject_class UMLRTType_Event = 
-{
-UMLRTObjectInitialize<Event>,
-UMLRTObjectCopy<Event>,
-UMLRTObject_decode,
-UMLRTObject_encode,
-UMLRTObjectDestroy<Event>,
-UMLRTObject_fprintf,
-"Event",
-NULL,
-{
-sizeof( Event ),
-0,
-Event::fields
-},
-UMLRTOBJECTCLASS_DEFAULT_VERSION,
-UMLRTOBJECTCLASS_DEFAULT_BACKWARDS
-};
 

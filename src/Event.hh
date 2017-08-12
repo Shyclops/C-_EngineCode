@@ -2,6 +2,16 @@
 #ifndef EVENT_HH
 #define EVENT_HH
 
+/*
+* Event.hh
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
+
+#ifndef EVENT_HH_
+#define EVENT_HH_
+
 #include <map>
 #include <iostream>
 #include <string.h>
@@ -9,27 +19,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include "umlrtobjectclass.hh"
-
 
 class Event {
 
-
-
 public:
 typedef enum {
-Signal, Method, ActionCode, Transition, State, Capsule, Attribute, Timer, UnknownSource
-} EventSource; 
+Signal,
+Method,
+ActionCode,
+Transition,
+State,
+Capsule,
+Attribute,
+Timer,
+UnknownSource
+} EventSource;
 
 typedef enum {
 SendSignal, ReceiveSignal, DeferSignal, RecallSignal, CancelSignal, // Signal events
-MethodCall, MethodCallReceive, MethodStartExecute, MethodReturn, MethodFailed, MethodReturnReceived, // Method events
-ActionStart, ActionEnd, // Action code events
-TransitionStart, TransitionEnd, // Transition events
-StateEntryStart, StateEntryEnd, StateExitStart, StateExitEnd, StateIdleStart, StateIdleEnd, // State events
-CapsuleInstantiate, CapsuleFree, // Capsule events
-AttributeInstantiate, AttributeFree, AttributeChange, // Attribute events
-TimerStart, TimerSet, TimerCancel, TimerTimeout, // Timer events
+MethodCall,
+MethodCallReceive,
+MethodStartExecute,
+MethodReturn,
+MethodFailed,
+MethodReturnReceived, // Method events
+ActionStart,
+ActionEnd, // Action code events
+TransitionStart,
+TransitionEnd, // Transition events
+StateEntryStart,
+StateEntryEnd,
+StateExitStart,
+StateExitEnd,
+StateIdleStart,
+StateIdleEnd, // State events
+CapsuleInstantiate,
+CapsuleFree, // Capsule events
+AttributeInstantiate,
+AttributeFree,
+AttributeChange, // Attribute events
+TimerStart,
+TimerSet,
+TimerCancel,
+TimerTimeout, // Timer events
 UnknownKind
 } EventKind;
 
@@ -44,12 +76,9 @@ EventKind eventKind;
 std::map<std::string, std::string> params;
 
 public:
-Event(std::string capsuleInstance = "",
-std::string sourceName = "",
-EventSource eventSource = UnknownSource,
-EventKind eventKind = UnknownKind,
-long seconds = 0,
-long nanoseconds = 0);
+Event(std::string capsuleInstance = "", std::string sourceName = "",
+EventSource eventSource = UnknownSource, EventKind eventKind =
+UnknownKind, long seconds = 0, long nanoseconds = 0);
 const std::string getCapsuleInstance() const;
 void setCapsuleInstance(const std::string capsuleInstance);
 const std::string getSourceName() const;
@@ -70,13 +99,12 @@ void generateEventId();
 const std::map<std::string, std::string> getParams() const;
 const std::string getParam(std::string key) const;
 void setParams(const std::map<std::string, std::string> params);
-void setParam(const  std::string key, const std::string value);
-void setParam(const  std::string key, const int value);
+void setParam(const std::string key, const std::string value);
+void setParam(const std::string key, const int value);
 void clearParams();
-static const UMLRTObject_field fields[];
 };
 
-extern const UMLRTObject_class UMLRTType_Event;
+#endif /* EVENT_HH_ */
 
 
 #endif

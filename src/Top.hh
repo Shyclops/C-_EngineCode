@@ -19,7 +19,8 @@ public:
         part_detection,
         part_observer,
         part_test,
-        part_testCont
+        part_testCont,
+        part_zombieBehavior
     };
 protected:
     const UMLRTCapsulePart * const calculation;
@@ -27,6 +28,7 @@ protected:
     const UMLRTCapsulePart * const observer;
     const UMLRTCapsulePart * const test;
     const UMLRTCapsulePart * const testCont;
+    const UMLRTCapsulePart * const zombieBehavior;
 public:
     virtual void bindPort( bool isBorder, int portId, int index );
     virtual void unbindPort( bool isBorder, int portId, int index );

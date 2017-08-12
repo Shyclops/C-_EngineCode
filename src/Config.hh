@@ -2,6 +2,16 @@
 #ifndef CONFIG_HH
 #define CONFIG_HH
 
+/*
+* Config.hh
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
+
+#ifndef CONFIG_HH_
+#define CONFIG_HH_
+
 #include <string>
 #include <map>
 
@@ -12,7 +22,7 @@ std::string configFileName;
 std::string fieldSeparator;
 std::string commentStr;
 std::string getConfigPath();
-std::map<std::string,std::string> configList;
+std::map<std::string, std::string> configList;
 
 public:
 Config();
@@ -29,8 +39,10 @@ const std::string getFieldSeparator() const;
 void setCommentStr(const std::string commentStr);
 const std::string getCommentStr() const;
 
-const std::map<std::string,std::string> getConfigList() const;
+const std::map<std::string, std::string> getConfigList() const;
 };
+
+#endif /* CONFIG_HH_ */
 
 
 #endif

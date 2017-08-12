@@ -1,7 +1,7 @@
 
 #include "Observation.hh"
 
-#include "Event.hh"
+#include "EventObj.hh"
 #include "umlrtobjectclass.hh"
 #include "umlrtoutsignal.hh"
 struct UMLRTCommsPort;
@@ -10,7 +10,7 @@ static UMLRTObject_field fields_event[] =
 {
     {
         "data",
-        &UMLRTType_Event,
+        &UMLRTType_EventObj,
         0,
         1,
         0
@@ -19,7 +19,7 @@ static UMLRTObject_field fields_event[] =
 
 static UMLRTObject payload_event = 
 {
-    sizeof( Event ),
+    sizeof( EventObj ),
     1,
     fields_event
 };
@@ -29,7 +29,7 @@ Observation::Base::Base( const UMLRTCommsPort * & srcPort )
 {
 }
 
-UMLRTOutSignal Observation::Base::event( const Event & data ) const
+UMLRTOutSignal Observation::Base::event( const EventObj & data ) const
 {
     UMLRTOutSignal signal;
     signal.initialize( "event", signal_event, srcPort, &payload_event, &data );

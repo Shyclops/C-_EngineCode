@@ -17,7 +17,6 @@ Capsule_TestCont::Capsule_TestCont( const UMLRTCapsuleClass * cd, UMLRTSlot * st
 , directions( borderPorts[borderport_directions] )
 , directions2( borderPorts[borderport_directions2] )
 , directions3( internalPorts[internalport_directions3] )
-, observation( internalPorts[internalport_observation] )
 , test( internalPorts[internalport_test] )
 , x( 0 )
 , y( 0 )
@@ -30,7 +29,6 @@ Capsule_TestCont::Capsule_TestCont( const UMLRTCapsuleClass * cd, UMLRTSlot * st
     stateNames[SPECIAL_INTERNAL_STATE_TOP] = "<top>";
     stateNames[SPECIAL_INTERNAL_STATE_UNVISITED] = "<uninitialized>";
 }
-
 
 
 
@@ -181,10 +179,6 @@ void Capsule_TestCont::transitionaction_____transition3( const UMLRTMessage * ms
     /* UMLRTGEN-USERREGION-BEGIN platform:/resource/Engine/Engine.uml Engine::TestCont transition Waiting,Playing,isReadyIn:test */
     x = X;
     y = Y;
-    Event e1;
-    e1.setSourceName(this->getName());
-    e1.setParam("cmd", "update");
-    observation.event(e1).send();
     /* UMLRTGEN-USERREGION-END */
     #undef rtdata
     #undef Y
@@ -373,20 +367,6 @@ static const UMLRTCommsPortRole portroles_internal[] =
         false
     },
     {
-        Capsule_TestCont::port_observation,
-        "Observation",
-        "observation",
-        "",
-        1,
-        true,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false
-    },
-    {
         Capsule_TestCont::port_test,
         "Test",
         "test",
@@ -431,7 +411,7 @@ const UMLRTCapsuleClass TestCont =
     NULL,
     2,
     portroles_border,
-    4,
+    3,
     portroles_internal
 };
 

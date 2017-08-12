@@ -2,8 +2,16 @@
 #include "Text.hh"
 
 
+/*
+* Text.cc
+*
+*  Created on: Jun 29, 2017
+*      Author: nicolas
+*/
+
+#include "Text.hh"
+
 #include "Event.hh"
-#include "umlrttimespec.hh"
 
 #include <string.h>
 #include <sstream>
@@ -14,11 +22,13 @@
 #include <vector>
 #include <algorithm>
 
-Text::Text() : Serializer() {
+Text::Text() :
+Serializer() {
 this->setSeparator('|');
 this->setParamSeparator(';');
 this->setKeyValueSeparator(':');
-this->setFormat("eventId|sourceName|eventSource|eventKind|seconds|nanoseconds|params");
+this->setFormat(
+"eventId|sourceName|eventSource|eventKind|seconds|nanoseconds|params");
 }
 
 Text::~Text() {
@@ -40,7 +50,6 @@ this->setParamSeparator(paramSeparator[0]);
 
 if (!keyValueSeparator.empty())
 this->setKeyValueSeparator(keyValueSeparator[0]);
-
 
 if (!format.empty())
 this->setFormat(format);
@@ -85,7 +94,7 @@ std::stringstream out;
 std::vector<std::string>::iterator it1;
 std::vector<std::string> v = this->fields;
 
-for (it1 = v.begin() ; it1 != v.end(); ++it1) {
+for (it1 = v.begin(); it1 != v.end(); ++it1) {
 std::string field = *it1;
 std::transform(field.begin(), field.end(), field.begin(), ::tolower);
 out << this->getField(field, event) << fieldSeparator;
@@ -100,19 +109,19 @@ const std::string Text::serializeParams(Event event) const {
 std::stringstream out;
 
 // params
-std::map<std::string,std::string>::const_iterator it2;
-std::map<std::string,std::string> params = event.getParams();
+std::map<std::string, std::string>::const_iterator it2;
+std::map<std::string, std::string> params = event.getParams();
 
 if (params.empty())
 return out.str();
-
 
 it2 = params.begin();
 out << it2->first << this->keyValueSeparator << it2->second;
 ++it2;
 
 for (; it2 != params.end(); ++it2) {
-out << this->paramSeparator << it2->first << this->keyValueSeparator << it2->second;
+out << this->paramSeparator << it2->first << this->keyValueSeparator
+<< it2->second;
 }
 
 return out.str();
@@ -126,7 +135,8 @@ std::vector<std::string> values = this->split(data, fieldSeparator);
 Event event;
 
 if (values.size() < fieldNumber) {
-std::cout << "Error in parsing event stream, only " << values.size() << " are parsed \n";
+std::cout << "Error in parsing event stream, only " << values.size()
+<< " are parsed \n";
 return event;
 }
 
@@ -134,7 +144,7 @@ std::vector<std::string>::iterator it;
 std::vector<std::string> v = this->fields;
 int i = 0;
 
-for (it = v.begin() ; it != v.end(); ++it) {
+for (it = v.begin(); it != v.end(); ++it) {
 std::string field = *it;
 std::transform(field.begin(), field.end(), field.begin(), ::tolower);
 this->setField(field, values[i], event);
@@ -170,7 +180,8 @@ event.setParam(key, value);
 }
 }
 
-const std::vector<std::string> Text::split(const std::string data, const char separator) const {
+const std::vector<std::string> Text::split(const std::string data,
+const char separator) const {
 
 std::vector<std::string> v;
 std::string temp = "";
@@ -181,8 +192,7 @@ if (data[i] == separator) {
 newField = false;
 v.push_back(temp);
 temp = "";
-}
-else {
+} else {
 temp = temp + (data[i]);
 newField = true;
 }
@@ -194,7 +204,8 @@ return v;
 }
 
 // The functions below have to be overriden when extending the observer
-const std::string Text::getField(const std::string field, const Event& event) const {
+const std::string Text::getField(const std::string field,
+const Event& event) const {
 
 std::stringstream ss; // for conversion purpose
 
@@ -202,30 +213,29 @@ if (field == "eventid")
 return event.getEventId();
 else if (field == "sourcename")
 return event.getSourceName();
+else if (field == "capsuleinstance")
+return event.getCapsuleInstance();
 else if (field == "eventsource") {
 ss << event.getEventSource();
 return ss.str();
-}
-else if (field == "eventkind") {
+} else if (field == "eventkind") {
 ss << event.getEventKind();
 return ss.str();
-}
-else if (field == "seconds") {
+} else if (field == "seconds") {
 ss << event.getSeconds();
 return ss.str();
-}
-else if (field == "nanoseconds") {
+} else if (field == "nanoseconds") {
 ss << event.getNanoseconds();
 return ss.str();
-}
-else if (field == "params") {
+} else if (field == "params") {
 return this->serializeParams(event);
 }
 
 return "";
 }
 
-void Text::setField(const std::string field, const std::string value, Event& event) const {
+void Text::setField(const std::string field, const std::string value,
+Event& event) const {
 
 std::stringstream ss; // for conversion purpose
 
@@ -234,18 +244,14 @@ event.setEventId(value);
 else if (field == "sourcename")
 event.setSourceName(value);
 else if (field == "eventsource") {
-event.setEventSource((Event::EventSource)(atoi(value.c_str())));
-}
-else if (field == "eventkind") {
-event.setEventKind((Event::EventKind)(atoi(value.c_str())));
-}
-else if (field == "seconds") {
+event.setEventSource((Event::EventSource) (atoi(value.c_str())));
+} else if (field == "eventkind") {
+event.setEventKind((Event::EventKind) (atoi(value.c_str())));
+} else if (field == "seconds") {
 event.setSeconds(atol(value.c_str()));
-}
-else if (field == "nanoseconds") {
+} else if (field == "nanoseconds") {
 event.setNanoseconds(atol(value.c_str()));
-}
-else if (field == "params") {
+} else if (field == "params") {
 this->parseParameters(event, value);
 }
 }

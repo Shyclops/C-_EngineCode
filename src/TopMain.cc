@@ -22,17 +22,27 @@ int main( int argc, char * argv[] )
 {
     UMLRTController::initializePools( &signalElementPool, &messagePool, &timerPool );
     UMLRTMain::setArgs( argc, argv );
-    UMLRTCapsuleToControllerMap::setDefaultSlotList( Top_slots, 6 );
+    UMLRTCapsuleToControllerMap::setDefaultSlotList( Top_slots, 7 );
 
     if( ! UMLRTMain::targetStartup() )
         return EXIT_FAILURE;
 
-    DefaultController->spawn();
+    MainThread->spawn();
+    CalculationThread->spawn();
+    DetectionThread->spawn();
+    ObserverThread->spawn();
+    TestThread->spawn();
+    ZombieThread->spawn();
 
     if( ! UMLRTMain::mainLoop() )
         return UMLRTMain::targetShutdown( false );
 
-    DefaultController->join();
+    ZombieThread->join();
+    TestThread->join();
+    ObserverThread->join();
+    DetectionThread->join();
+    CalculationThread->join();
+    MainThread->join();
 
     return UMLRTMain::targetShutdown( true );
 }

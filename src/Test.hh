@@ -2,6 +2,7 @@
 #ifndef TEST_HH
 #define TEST_HH
 
+#include "VectorWrapper.hh"
 #include "umlrtoutsignal.hh"
 #include "umlrtprotocol.hh"
 #include "umlrtsignal.hh"
@@ -14,14 +15,15 @@ namespace Test
     public:
         Conj( const UMLRTCommsPort * & srcPort );
         UMLRTOutSignal isReadyIn( int X, int Y ) const;
-        UMLRTOutSignal isStartIn( int X, int Y ) const;
+        UMLRTOutSignal isStartIn() const;
     };
     enum SignalId
     {
         signal_isReadyIn = UMLRTSignal::FIRST_PROTOCOL_SIGNAL_ID,
         signal_isStartIn,
         signal_isReadyOut,
-        signal_isStartOut
+        signal_isStartOut,
+        signal_zombieOut
     };
     class Base : public UMLRTProtocol
     {
@@ -29,6 +31,7 @@ namespace Test
         Base( const UMLRTCommsPort * & srcPort );
         UMLRTOutSignal isReadyOut( int X, int Y ) const;
         UMLRTOutSignal isStartOut( int X, int Y ) const;
+        UMLRTOutSignal zombieOut( const VectorWrapper & data, int max ) const;
     };
 };
 
